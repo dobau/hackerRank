@@ -1,3 +1,4 @@
+package com.dobau.hackerRank.java;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 

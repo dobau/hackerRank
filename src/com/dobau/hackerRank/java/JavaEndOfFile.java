@@ -1,3 +1,4 @@
+package com.dobau.hackerRank.java;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -14,9 +15,10 @@ public class JavaEndOfFile {
 		}
 
 		scan.close();
-
+		
 		for (int i = 0; i < lines.size(); i++) {
 			System.out.printf("%d %s%n", i + 1, lines.get(i));
 		}
+		
 	}
 }

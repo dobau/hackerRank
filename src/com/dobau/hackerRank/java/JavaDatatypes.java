@@ -1,3 +1,4 @@
+package com.dobau.hackerRank.java;
 import java.util.Scanner;
 
 public class JavaDatatypes {
