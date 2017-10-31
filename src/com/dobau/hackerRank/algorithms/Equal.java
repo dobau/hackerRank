@@ -34,56 +34,42 @@ public class Equal {
 	private static Integer countOperations(int colleagues, List<Integer> chocolates) {
 		int count = 0;
 		
-		int firstDiffIndex = 0;
+		Collections.sort(chocolates);
 		
-		while ((firstDiffIndex = findFirstDiffOf(chocolates, firstDiffIndex)) != -1) {
-			Collections.sort(chocolates);
-			
-			boolean equal = true;
-			
-			for (int i = 0; i < chocolates.size() - 1 && equal; i++) {
-				int diff = chocolates.get(i + 1) - chocolates.get(i);
-				if (diff != 0) {
-					equal = false;
+		int acumulator = 0;
+		
+		for (int i = 0; i < chocolates.size() - 1; i++) {
+			int diff = chocolates.get(i + 1) - chocolates.get(i);
+			if (diff != 0) {
+				
+				if (((int)diff / 5) > 0) {
+					acumulator += diff - (diff % 5);
+					count += (int) (diff / 5);
 					
-					int chocolateToGive = 0;
+					diff = diff % 5;
+				}
+				
+				if (((int)diff / 2) > 0) {
+					acumulator += diff - (diff % 2);
+					count += (int) (diff / 2);
 					
-					if (diff >= 5) {
-						chocolateToGive = diff - (diff % 5);
-						count = count + (int) (diff / 5);
-					} else if (diff >= 2) {
-						chocolateToGive = diff - (diff % 2);
-						count = count + (int) (diff / 2);
-					} else {
-						chocolateToGive = diff - (diff % 1);
-						count = count + (int) (diff / 1);
-					}
+					diff = diff % 2;
+				}
+				
+				if (((int)diff / 1) > 0) {
+					acumulator += diff - (diff % 1);
+					count += (int) (diff / 1);
 					
-					giveChocolatesExceptoTo(chocolates, chocolateToGive, i + 1);
+					diff = diff % 1;
+				}
+				
+				if (chocolates.size() > i + 2) {
+					chocolates.set(i + 2, chocolates.get(i + 2) + acumulator);
 				}
 			}
-			
 		}
 			
 		return count;
-	}
-
-	private static void giveChocolatesExceptoTo(List<Integer> chocolates, int chocolateToGive, int choosedColleagueIndex) {
-		for (int i = 0; i < chocolates.size();i++) {
-			if (choosedColleagueIndex != i) {
-				chocolates.set(i, chocolates.get(i) + chocolateToGive);
-			}
-		}
-	}
-
-	private static int findFirstDiffOf(List<Integer> chocolates, int of) {
-		for (int i = of; i < chocolates.size(); i++) {
-			if (!chocolates.get(0).equals(chocolates.get(i))) {
-				return i;
-			}
-		}
-		
-		return -1;
 	}
 	
 }
