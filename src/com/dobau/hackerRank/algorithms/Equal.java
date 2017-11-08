@@ -23,7 +23,7 @@ public class Equal {
 				chocolates.add(scan.nextInt());
 			}
 			
-			results.add(countOperations(colleagues, chocolates));
+			results.add(countOperationsA(chocolates));
 		});
 		
 		scan.close();
@@ -31,7 +31,7 @@ public class Equal {
 		results.stream().forEach(System.out::println);
 	}
 
-	private static Integer countOperations(int colleagues, List<Integer> chocolates) {
+	private static Integer countOperations(List<Integer> chocolates) {
 		int count = 0;
 		
 		Collections.sort(chocolates);
@@ -72,4 +72,27 @@ public class Equal {
 		return count;
 	}
 	
+	private static Integer countOperationsA(List<Integer> chocolates) {
+		int count = Integer.MAX_VALUE;
+		
+		Collections.sort(chocolates);
+		
+		for (int i = chocolates.get(0); i >= 0 ; i--) {
+			int countPartial = 0;
+			
+			for (int j = 0; j < chocolates.size(); j++) {
+				countPartial += chocolates.get(j) / 5;
+				countPartial += (chocolates.get(j) % 5) / 2;
+				countPartial += ((chocolates.get(j) % 5) % 2) / 1;
+			}
+			
+			if (countPartial < count) {
+				count = countPartial;
+			}
+			
+		}
+			
+		return count;
+	}
+
 }
