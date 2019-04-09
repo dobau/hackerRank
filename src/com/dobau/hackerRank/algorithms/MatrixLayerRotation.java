@@ -4,83 +4,71 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static java.util.Collections.rotate;
 import static java.util.stream.Collectors.toList;
 
 public class MatrixLayerRotation {
 
     // Complete the matrixRotation function below.
     static void matrixRotation(List<List<Integer>> matrix, int r) {
-        for (int i = 0; i < matrix.size();i++) {
-            for (int j = 0; j < matrix.get(i).size();j++) {
-                System.out.printf("%d ", matrix.get(i).get(j));
-            }
+        List<List<Integer>> rows = new ArrayList<>();
+        matrixToRows(matrix, rows);
 
-            System.out.println();
-        }
-
-        System.out.println();
-        System.out.println();
-        System.out.println();
-
-
-        List<List<Integer>> rows = new ArrayList<>(matrix.size() / 2);
-
-        // primeira linha
-        rows.add(new ArrayList<>());
-        rows.get(i).addAll(matrix.get(i).subList(deep, matrix.get(i).size() - deep));
-
-        // coluna direita
-        int deep = 0;
-        for (int i = 0; i < matrix.size() / 2; i++) {
-            if (rows.size() <= i) {
-                rows.add(new ArrayList<>());
-            }
-
-            rows.get(i).addAll(matrix.get(i).subList(deep, matrix.get(i).size() - deep));
-        }
-
-        // ultima linha
-        int middle = (int) Math.ceil(matrix.size() / 2);
-        for (int i = matrix.size() - 1; i >= middle ; i--) {
-            List<Integer> subList = matrix.get(i).subList(deep, matrix.get(i).size() - deep);
-            subList.sort(Comparator.reverseOrder());
-            rows.get(matrix.size() - i - middle).addAll(subList);
-        }
-
-        // coluna esquerda
-        int deep = 0;
-        for (int i = 0; i < matrix.size() / 2; i++) {
-            if (rows.size() <= i) {
-                rows.add(new ArrayList<>());
-            }
-
-            rows.get(i).addAll(matrix.get(i).subList(deep, matrix.get(i).size() - deep));
-        }
-
-//            for (int b = 0; b < deep;b++) {
-//                rows.get(b).add(matrix.get(i).get(matrix.get(i).size() - b));
-//            }
-//
-//            rows.get(i).addAll(matrix.get(i).subList(deep, matrix.get(i).size() - deep));
-//
-//            for (int b = 0; b < deep;b++) {
-//                rows.get(b).add(matrix.get(i).get(b));
-//            }
-
-//            deep++;
-//            if (i + 1 < Math.ceil(matrix.get(i).size() / 2)) {
-//
-//            } else if (i + 1 > Math.ceil(matrix.get(i).size() / 2)) {
-//                deep--;
-//            }
-//        }
+        rows.forEach(row -> rotate(row, r));
 
         System.out.println(rows);
+    }
+
+    private static void matrixToRows(List<List<Integer>> matrix, List<List<Integer>> rows) {
+
+        List<Integer> row = new ArrayList<>();
+        List<Integer> firstLine = new ArrayList<>();
+        List<Integer> lastLine = new ArrayList<>();
+        List<Integer> rightLine = new ArrayList<>();
+        List<Integer> leftLine = new ArrayList<>();
+
+        List<List<Integer>> restMatrix = new ArrayList<>();
+
+        for (int i = 0; i < matrix.size(); i++) {
+            if (i == 0) {
+                List<Integer> r1 = matrix.get(i).subList(0, matrix.get(0).size());
+                firstLine.addAll(r1);
+            } else if (i == matrix.size() - 1) {
+                List<Integer> r2 = matrix.get(i).subList(0, matrix.get(0).size());
+                lastLine.addAll(r2);
+            } else {
+                rightLine.add(matrix.get(i).get(matrix.get(i).size() - 1));
+
+                if (matrix.get(i).size() > 1) {
+                    leftLine.add(matrix.get(i).get(0));
+                }
+
+                if (matrix.get(i).size() > 2) {
+                    restMatrix.add(matrix.get(i).subList(1, matrix.get(i).size() - 1));
+                }
+            }
+        }
+
+        row.addAll(firstLine);
+        row.addAll(rightLine);
+
+        Collections.reverse(lastLine);
+        row.addAll(lastLine);
+
+        Collections.reverse(leftLine);
+        row.addAll(leftLine);
+
+        rows.add(row);
+
+        if (restMatrix.size() > 0) {
+            matrixToRows(restMatrix, rows);
+        }
     }
 
     public static void main(String[] args) throws IOException {
