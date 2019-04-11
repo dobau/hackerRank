@@ -3,29 +3,67 @@ package com.dobau.hackerRank.algorithms;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Collections.rotate;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * https://www.hackerrank.com/challenges/matrix-rotation-algo/problem
+ */
 public class MatrixLayerRotation {
 
     // Complete the matrixRotation function below.
     static void matrixRotation(List<List<Integer>> matrix, int r) {
         List<List<Integer>> rows = new ArrayList<>();
-        matrixToRows(matrix, rows);
+        List<List<Integer>> sizes = new ArrayList<>();
+        matrixToRows(matrix, sizes, rows);
 
-        rows.forEach(row -> rotate(row, r));
+        rows.forEach(row -> rotate(row, -r));
 
-        System.out.println(rows);
+        fillAgain(rows, sizes, matrix);
+
+        matrix.forEach(row -> {
+            String str = row.stream()
+                            .map(v -> v.toString())
+                            .collect(Collectors.joining(" "));
+
+            System.out.println(str);
+        });
     }
 
-    private static void matrixToRows(List<List<Integer>> matrix, List<List<Integer>> rows) {
+    private static void fillAgain(List<List<Integer>> rows, List<List<Integer>> sizes, List<List<Integer>> newMatrix) {
+
+        int depth = (int) Math.floor(newMatrix.size() / 2) - 1;
+
+        for (int i = rows.size() - 1; i >= 0; i--) {
+            int row = depth;
+            int col = depth;
+            for (int j = 0; j < rows.get(i).size(); j++) {
+                newMatrix.get(row).set(col, rows.get(i).get(j));
+
+                int sizeX = sizes.get(i).get(1) - 1;
+                int sizeY = sizes.get(i).get(0) - 1;
+                if (j < sizeX) {
+                    col++;
+                } else if (j >= sizeX && j < sizeX + sizeY) {
+                    row++;
+                } else if  (j >= sizeX + sizeY && j < (2 * sizeX + sizeY)) {
+                    col--;
+                } else {
+                    row--;
+                }
+            }
+
+            depth--;
+        }
+
+    }
+
+    private static void matrixToRows(List<List<Integer>> matrix, List<List<Integer>> sizes, List<List<Integer>> rows) {
 
         List<Integer> row = new ArrayList<>();
         List<Integer> firstLine = new ArrayList<>();
@@ -34,6 +72,8 @@ public class MatrixLayerRotation {
         List<Integer> leftLine = new ArrayList<>();
 
         List<List<Integer>> restMatrix = new ArrayList<>();
+
+        sizes.add(Arrays.asList(matrix.size(), matrix.get(0).size()));
 
         for (int i = 0; i < matrix.size(); i++) {
             if (i == 0) {
@@ -67,7 +107,7 @@ public class MatrixLayerRotation {
         rows.add(row);
 
         if (restMatrix.size() > 0) {
-            matrixToRows(restMatrix, rows);
+            matrixToRows(restMatrix, sizes, rows);
         }
     }
 
